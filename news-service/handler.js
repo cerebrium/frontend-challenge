@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 const news = require('./newsapi')
 
 /**
@@ -7,6 +8,7 @@ const news = require('./newsapi')
  * @return {JSON} HTTP response JSON obj
  *
  */
+
 module.exports.hello = async (event, ctx, cb) => {
   cb(null, {
     statusCode: 200,

@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable consistent-return */
 /* eslint-disable no-console */
 require('dotenv').config()
 const NewsAPI = require('newsapi')

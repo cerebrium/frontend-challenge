@@ -1,33 +1,105 @@
 <template>
   <v-app>
-    <v-navigation-drawer app></v-navigation-drawer>
-    <v-toolbar app>
-      <v-toolbar-title class="headline text-uppercase">
-        <v-btn to="/" flat>
-          <span>News API</span>
-        </v-btn>
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn to="/about" flat>About</v-btn>
+    <v-navigation-drawer id="sideBar" app>
+      <Calendar :initialDate="calenderInitial" />
+    </v-navigation-drawer>
+    <v-toolbar id="navBar" app>
+      <v-btn to="/" class="topButton" v-on:click="title = 'HOME'" flat>
+        <span>HOME</span>
+      </v-btn>
+      <v-btn to="/" class="topButton" v-on:click="title = 'NEWS'" flat>
+        <span>News</span>
+      </v-btn>
+      <v-btn to="/" class="topButton" v-on:click="title = 'SPORTS'" flat>
+        <span>Sports</span>
+      </v-btn>
+      <v-spacer>
+        <span id="titleText">
+          {{ title }}
+        </span>
+      </v-spacer>
+      <v-btn href="#" class="topButton" flat>
+        <span>Top</span>
+      </v-btn>
     </v-toolbar>
     <v-content>
       <v-container fluid>
-        <router-view></router-view>
+        <router-view :title="title"></router-view>
       </v-container>
     </v-content>
-    <!-- <v-footer app>
-      <p>News API app</p>
-    </v-footer>-->
   </v-app>
 </template>
 
 <script>
+import Calendar from './components/Calendar'
+
 export default {
+  components: {
+    Calendar
+  },
   name: 'App',
-  data() {
-    return {
-      //
-    }
-  }
+  data: () => ({
+    title: 'HOME'
+  })
 }
 </script>
+<style>
+#navBar {
+  background-color: rgb(42, 43, 45);
+  /* display: flex; */
+  /* align-items: center; */
+  /* justify-content: center; */
+}
+
+html,
+body {
+  scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 7px;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: rgb(42, 43, 45);
+  box-shadow: 0 0 1px rgb(42, 43, 45);
+  -webkit-box-shadow: 0 0 1px rgb(42, 43, 45);
+}
+
+.topButton {
+  display: block;
+  position: relative;
+  width: 7vw;
+  height: 4vh;
+  border: none;
+  margin-right: 1vw;
+  background: linear-gradient(to right, #e7e7e7 50%, lightgrey 50%);
+  background-size: 200% 100%;
+  background-position: right;
+  color: black;
+  font-weight: 400;
+  font-size: 1em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 7px;
+  transition: all 0.25s ease-in-out;
+  margin-right: 1rem auto;
+  border-radius: 0.5rem;
+}
+
+.topButton:hover {
+  background-position: left bottom;
+}
+
+#titleText {
+  margin-left: 15vw;
+  color: lightgray;
+  font-size: 2em;
+}
+
+#sideBar {
+  background-color: rgb(42, 43, 45);
+}
+</style>

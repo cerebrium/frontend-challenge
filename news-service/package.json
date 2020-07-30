@@ -9,7 +9,7 @@
     "test": "tests"
   },
   "dependencies": {
-    "dotenv": "^8.0.0",
+    "dotenv": "^8.2.0",
     "express": "^4.17.0",
     "newsapi": "^2.4.0",
     "serverless-http": "^2.0.2"

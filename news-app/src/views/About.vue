@@ -7,8 +7,10 @@
           flat
           src="https://github.com/suverahealth/news-api"
           target="_blank"
-          >Repo</v-btn
         >
+          This is an app that allows you to search headlines in English
+          newspapers.
+        </v-btn>
       </div>
     </v-layout>
   </v-container>

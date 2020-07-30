@@ -2,7 +2,7 @@
   <v-container grid-list-md fluid>
     <v-layout wrap>
       <div id="homeTitle" class="display-1">
-        Showing you the {{ contentType }}
+        <HeadlineScroll :contentObject="contentObject" />
       </div>
       <v-flex md12>
         <v-text-field
@@ -23,7 +23,7 @@
         v-for="article in articles"
         :key="article.publishedAt"
       >
-        <Article :article="article" />
+        <Article :article="article" :index="articles.indexOf(article)" />
       </v-flex>
     </v-layout>
   </v-container>
@@ -33,24 +33,59 @@
 import debounce from 'lodash/debounce'
 import axios from 'axios'
 import Article from '../components/Article'
+import HeadlineScroll from '../components/HeadlineScroll'
 
-const stage = process.env.NODE_ENV
-axios.defaults.baseURL = `${process.env.VUE_APP_SERVICE_URL}${stage}`
+axios.defaults.baseURL = `${process.env.VUE_APP_SERVICE_URL}${process.env.VUE_APP_NODE_ENV}`
 axios.defaults.withCredentials = true
 axios.defaults.headers.common['Content-Type'] = 'application/json'
 
+let currentIndex = 0
 export default {
   components: {
-    Article
+    Article,
+    HeadlineScroll
+  },
+  props: {
+    title: String
   },
   data: () => ({
     articles: [],
+    arrayOfArticleNames: [],
     filterQuery: '',
-    contentType: 'top UK headlines'
+    contentType: 'top UK headlines',
+    contentObject: {},
+    displayingTitles: null
   }),
   created() {
-    console.log(process.env[`VUE_APP_SERVICE_URL_${stage}`])
     this.loadArticles('headlines', JSON.stringify({ country: 'gb' }))
+  },
+  watch: {
+    articles: {
+      immediate: true,
+      handler() {
+        if (this.displayingTitles) {
+          clearInterval(this.displayingTitles)
+        }
+        this.arrayOfArticleNames = []
+        currentIndex = 0
+        this.articles.forEach((article, articleId) => {
+          this.arrayOfArticleNames.push({
+            title: article.title,
+            index: articleId
+          })
+        })
+        this.contentObject = this.arrayOfArticleNames[currentIndex]
+        this.displayingTitles = setInterval(() => {
+          currentIndex === this.arrayOfArticleNames.length
+            ? (currentIndex = 0)
+            : (currentIndex += 1)
+          this.contentObject = this.arrayOfArticleNames[currentIndex]
+        }, 7000)
+      }
+    },
+    title: function consoleThis() {
+      this.loadFilter(this.title)
+    }
   },
   methods: {
     loadFilter: debounce(function loadFilter(input) {
@@ -66,6 +101,9 @@ export default {
       axios
         .post(`/articles?type=${type}`, params)
         .then(response => {
+          response.data.articles.sort((a, b) =>
+            a.publishedAt > b.publishedAt ? 1 : -1
+          )
           this.articles = response.data.articles
         })
         .catch(error => console.log({ error }))
