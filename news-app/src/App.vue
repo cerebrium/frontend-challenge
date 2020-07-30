@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-navigation-drawer id="sideBar" app>
-      <Calendar :initialDate="calenderInitial" />
+      <Calendar />
     </v-navigation-drawer>
     <v-toolbar id="navBar" app>
       <v-btn to="/" class="topButton" v-on:click="title = 'HOME'" flat>

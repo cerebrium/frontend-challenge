@@ -6,42 +6,34 @@
         todaysDate.getHours() > 12
           ? todaysDate.getHours() - 12
           : todaysDate.getHours()
-      }}:{{ todaysDate.getMinutes() }}
+      }}:{{ todaysDate.getMinutes() }}: {{ todaysDate.getSeconds() }}
       {{ todaysDate.getHours() > 12 ? 'PM' : 'AM' }}
     </div>
     <div>
-      {{ n }}
+      <Calendar :value="selectedDate" />
     </div>
   </div>
 </template>
 
 <script>
-const getDaysInMonth = function(month, year) {
-  return new Date(year, month, 0).getDate()
-}
+import Calendar from 'v-calendar/lib/components/calendar.umd'
 
 export default {
-  //   props: {
-  //     contentObject: Object
-  //   },
-
+  components: {
+    Calendar
+  },
   data: () => ({
     daysInMoth: Number,
+    checkTheTime: null,
     calanderDivs: 0,
     monthName: String,
     todaysDate: new Date(),
     selectedDate: new Date()
   }),
-  watch: {
-    selectedDate: {
-      // makes a calender
-      function() {
-        this.calanderDivs = getDaysInMonth(
-          this.selectedDate.getMonth(),
-          this.selectedDate.getYear()
-        )
-      }
-    }
+  mounted: function() {
+    setInterval(() => {
+      this.todaysDate = new Date()
+    }, 1000)
   }
 }
 </script>

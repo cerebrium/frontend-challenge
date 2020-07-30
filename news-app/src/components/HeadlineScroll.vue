@@ -6,7 +6,7 @@
       class="scrollStyle"
       id="topOfPage"
     >
-      {{ articleTitle.title }}
+      {{ articleTitle ? articleTitle.title : 'null'}}
     </a>
   </div>
 </template>
@@ -21,8 +21,10 @@ export default {
     contentObject: {
       immediate: true,
       handler() {
-        this.articleTitle = this.contentObject
-        this.articleIndex = `#${this.contentObject.index}`
+        if (this.contentObject) {
+          this.articleTitle = this.contentObject
+          this.articleIndex = `#${this.contentObject.index}`
+        }
       }
     },
     consoleMessage: function logger() {

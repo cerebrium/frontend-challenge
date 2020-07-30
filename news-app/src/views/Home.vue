@@ -66,25 +66,29 @@ export default {
         if (this.displayingTitles) {
           clearInterval(this.displayingTitles)
         }
-        this.arrayOfArticleNames = []
-        currentIndex = 0
-        this.articles.forEach((article, articleId) => {
-          this.arrayOfArticleNames.push({
-            title: article.title,
-            index: articleId
+        if (this.articles) {
+          this.arrayOfArticleNames = []
+          currentIndex = 0
+          this.articles.forEach((article, articleId) => {
+            this.arrayOfArticleNames.push({
+              title: article.title,
+              index: articleId
+            })
           })
-        })
-        this.contentObject = this.arrayOfArticleNames[currentIndex]
-        this.displayingTitles = setInterval(() => {
-          currentIndex === this.arrayOfArticleNames.length
-            ? (currentIndex = 0)
-            : (currentIndex += 1)
           this.contentObject = this.arrayOfArticleNames[currentIndex]
-        }, 7000)
+          this.displayingTitles = setInterval(() => {
+            currentIndex === this.arrayOfArticleNames.length
+              ? (currentIndex = 0)
+              : (currentIndex += 1)
+            this.contentObject = this.arrayOfArticleNames[currentIndex]
+          }, 7000)
+        }
       }
     },
     title: function consoleThis() {
-      this.loadFilter(this.title)
+      if (this.title) {
+        this.loadFilter(this.title)
+      }
     }
   },
   methods: {
