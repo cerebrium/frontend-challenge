@@ -1,8 +1,5 @@
 <template>
   <v-app>
-    <v-navigation-drawer id="sideBar" app>
-      <Calendar />
-    </v-navigation-drawer>
     <v-toolbar id="navBar" app>
       <v-btn to="/" class="topButton" v-on:click="title = 'HOME'" flat>
         <span>HOME</span>
@@ -31,12 +28,7 @@
 </template>
 
 <script>
-import Calendar from './components/Calendar'
-
 export default {
-  components: {
-    Calendar
-  },
   name: 'App',
   data: () => ({
     title: 'HOME'
@@ -46,9 +38,6 @@ export default {
 <style>
 #navBar {
   background-color: rgb(42, 43, 45);
-  /* display: flex; */
-  /* align-items: center; */
-  /* justify-content: center; */
 }
 
 html,
@@ -94,7 +83,7 @@ body {
 }
 
 #titleText {
-  margin-left: 15vw;
+  margin-left: 22vw;
   color: lightgray;
   font-size: 2em;
 }

@@ -3,10 +3,10 @@
     <a
       :href="articleIndex"
       v-on:click="consoleMessage = articleTitle.index"
-      class="scrollStyle"
+      :class="contentClassName"
       id="topOfPage"
     >
-      {{ articleTitle ? articleTitle.title : 'null'}}
+      {{ articleTitle ? articleTitle.title : 'null' }}
     </a>
   </div>
 </template>
@@ -22,36 +22,43 @@ export default {
       immediate: true,
       handler() {
         if (this.contentObject) {
+          this.contentClassName = 'none'
           this.articleTitle = this.contentObject
           this.articleIndex = `#${this.contentObject.index}`
+          this.contentClassName = 'scrollStyle'
         }
       }
     },
-    consoleMessage: function logger() {
-      console.log(this.consoleMessage)
+    contentClassName: function logger() {
+      console.log(this.contentClassName)
     }
   },
 
   data: () => ({
-    articleTitle: String,
-    articleIndex: String,
-    consoleMessage: String
+    articleTitle: Object,
+    articleIndex: '',
+    consoleMessage: '',
+    contentClassName: ''
   })
 }
 </script>
 
 <style scoped>
-@keyframes slideInTitle {
-  0% {
-    opacity: 0;
+/* The typing effect */
+@keyframes typing {
+  from {
+    width: 0;
   }
-  100% {
-    opacity: 1;
+  to {
+    width: 100%;
   }
 }
 
 .scrollStyle {
-  animation: slideInTitle 2s linear;
+  overflow: hidden;
+  white-space: nowrap;
+  margin: 0 auto;
+  animation: typing 3.5s steps(40, end);
   display: block;
   position: relative;
   max-width: 80vw;
@@ -63,19 +70,15 @@ export default {
   color: black;
   font-weight: 400;
   font-size: 0.7em;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   padding: 7px;
   transition: all 0.4s ease-in-out;
-  margin-right: 1rem auto;
   border-radius: 0.5rem;
 }
 .scrollStyle:hover {
   background-position: left bottom;
 }
 
-#topOfPage{
+#topOfPage {
   text-decoration: none;
 }
 </style>
