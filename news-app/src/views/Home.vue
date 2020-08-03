@@ -75,12 +75,15 @@ export default {
     this.loadArticles('headlines', JSON.stringify({ country: 'gb' }))
   },
   watch: {
+    // this is the handler for watching when the articles come in, so that the titles can be displayed
     articles: {
       immediate: true,
       handler() {
+      // the messages are displayed using an interval, but it is recreated on every instance of the view lifecycle, so have to clear it or it breaks
         if (this.displayingTitles) {
           clearInterval(this.displayingTitles)
         }
+        // making the list of articles, with their id's to pass through to the component displaying them at the top ... title = content ... index = the id for onClick action
         if (this.articles) {
           this.arrayOfArticleNames = []
           currentIndex = 0
@@ -91,6 +94,7 @@ export default {
             })
           })
           this.contentObject = this.arrayOfArticleNames[currentIndex]
+          // loop through all the article titles, set the title wanted as the top healdine 7 second loop... have to make sure this doesn't index out of range though
           this.displayingTitles = setInterval(() => {
             currentIndex === this.arrayOfArticleNames.length
               ? (currentIndex = 0)
@@ -100,6 +104,7 @@ export default {
         }
       }
     },
+    // want the articles to come inm with all the data if it is present. so if you put in sports, then some dates it grabs those dates sports titles
     fromDate: function submitRequest() {
       if (this.toDate && this.fromDate) {
         this.searchByDate(
@@ -123,6 +128,7 @@ export default {
     }
   },
   methods: {
+    // awesome function!
     loadFilter: debounce(function loadFilter(input) {
       if (input) {
         this.contentType = `search results for: ${input}`
@@ -132,6 +138,7 @@ export default {
         this.loadArticles('headlines', JSON.stringify({ country: 'gb' }))
       }
     }, 500),
+    // equally as awesome!
     loadArticles(type, params) {
       axios
         .post(`/articles?type=${type}`, params)
@@ -146,6 +153,7 @@ export default {
     // function for searching by dates, with default as gb for input
     searchByDate: debounce(function searchByDate(startDate, endDate, input) {
       if (startDate && endDate) {
+        // your function works well, so I stole it, but added dates to it 
         this.loadArticles(
           'search',
           JSON.stringify({ from: startDate, to: endDate, q: input })
@@ -154,6 +162,7 @@ export default {
         this.endDate = null
       }
     }, 500),
+    // was an error happening that caused it to search for the wrong things, so I rerouted the search bar to make sure it didn't take any parameters that werent wanted
     allBackendRequests: function requests() {
       if (!this.startDate || !this.endDate) {
         this.loadFilter(this.filterQuery)

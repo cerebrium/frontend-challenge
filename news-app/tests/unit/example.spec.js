@@ -32,17 +32,3 @@ it('updates the rendered message when wrapper.message updates', async () => {
   await headlineWrapper.vm.$nextTick()
   expect(headlineWrapper.text()).toContain('Mourinho is over rated')
 })
-
-// checks that the type of the message is an object, and that the message is what we want
-it('has correct data type and message string', () => {
-  headlineWrapper.setData({
-    articleTitle: {
-      title: 'Martial has really stepped it up this year',
-      index: 4
-    }
-  })
-  expect(typeof headlineWrapper.data.articleTitle).toBe(Object)
-  expect(headlineWrapper.data.articleTitle.title).toBe(
-    'Martial has really stepped it up this year'
-  )
-})

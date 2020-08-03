@@ -18,6 +18,7 @@ export default {
   },
 
   watch: {
+    // grabs the incoming data and puts it into the hyperlink so that the title is displayed and it find the correct id
     contentObject: {
       immediate: true,
       handler() {
@@ -28,9 +29,6 @@ export default {
           this.contentClassName = 'scrollStyle'
         }
       }
-    },
-    contentClassName: function logger() {
-      console.log(this.contentClassName)
     }
   },
 
@@ -54,6 +52,7 @@ export default {
   }
 }
 
+/* same style as the buttons at top, not the biggest fan of this for the title, but matches the buttons suggesting scroll behavior */
 .scrollStyle {
   overflow: hidden;
   white-space: nowrap;

@@ -40,6 +40,7 @@ export default {
   background-color: rgb(42, 43, 45);
 }
 
+/* want to make the nav bar match the overall style */
 html,
 body {
   scroll-behavior: smooth;
@@ -56,6 +57,7 @@ body {
   -webkit-box-shadow: 0 0 1px rgb(42, 43, 45);
 }
 
+/* styling for the buttons to make them slide */
 .topButton {
   display: block;
   position: relative;
