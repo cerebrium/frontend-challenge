@@ -185,7 +185,6 @@ export default {
   padding: 5px;
   width: 47vw;
   margin-bottom: 10px;
-  /* border-radius: 0.5rem; */
   box-shadow: 0 3px 8px #8a8383;
 }
 

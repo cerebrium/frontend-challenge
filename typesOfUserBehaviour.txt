@@ -1,3 +1,71 @@
 create a markdown file describing what types of user behaviour you would like to capture on this page for an analytical framework
 
-The most important 
+    The most important aspect that I would want to track is what people were searching. With added knowledge about the search parameters people
+       are making I could add in more buttons or ease functions to make things generally done easier. If people wanted to search by different things 
+       I would want to facilitate that. The objective of this app seems to be to get the news to the viewer, so anything that works towards that goal 
+       would be best. 
+    I would also want to determine the ease at which the user was able to use the site. I would want to add some tracking of movement so that if they
+       didn't understand a button I would be able to fix that. In order to expand the audience I would add in a nationality button, and save the user 
+       preferences so they could have the news automatically go to their favorite when then log in. 
+
+
+DATABASE EVALUATION TASK
+1. As per the above provided requirements, define the minimal database structure which can satisfy the requirements. No queries are required,
+and what required tables and fields required?
+
+    I am going to make this using psql. I would make two classes (did this in python):
+        class User(models.Model):
+            user_id = models.UUIDField(
+                primary_key=True,
+                default=uuid.uuid4,
+                editable=False
+            ) # I like using UUID for user Id because it make sit harder for hackers to determine the order of the users
+            user_name = models.CharField(max_length=100, null = True) # always like to set the defualt to null since I write frontends in js, and with null I find less errors
+            email_name = models.CharField(max_length=50, null = True) # on the frontend would make sure the form required the correct format and warns about length
+
+            def __str__(self):
+            return self.user_name 
+
+        class Event(models.Model):
+            event_id = models.UUIDField(
+                primary_key=True,
+                default=uuid.uuid4,
+                editable=False
+            ) 
+            event_title = models.CharField(max_length=100, null = True) 
+            event_date = models.CharField(max_length=50, null = True) # there is a dateField option, but I use charfield because the frontend being in js formatting dates to python friendly is sometimes frustrating. I use .toDateString() and just save them as strings
+            event_location = models.CharField(max_length=50, null = True)  
+            event_cost = MoneyField(default=0, max_digits=19, decimal_places=2, default_currency='GBP', null = True) # saves it as pounds sterling instead of integers. frustrating to do math with at times on the frontend, but nice to have it come straight through with the pound sign
+            registered_users = models.ManyToManyField(Event, blank=True, null=True) # save all the users registered to the event
+
+            def __str__(self):
+            return self.event_id  # returning id here since could have yearly events and if the titles are used I can see issues arrising
+
+        def return_deleted_event_id_and_deleted_key():
+            return Event.objects.get(event_id='cancelled {}'.format(Event.objects.get(event_id)))    
+
+        class amountPayed(models.Model):
+            payment_id = models.UUIDField(
+                primary_key=True,
+                default=uuid.uuid4,
+                editable=False
+            ) 
+            event_id = models.ForeignKey(Event, null=True, on_delete=models.SET(return_deleted_event_id_and_deleted_key)
+            user_id = models.ForeignKey(User, null=True)
+            amount_payed = MoneyField(default=0, max_digits=19, decimal_places=2, default_currency='GBP', null = True)
+            refunded = models.CharField(max_length=50, null = True)
+
+    # the thing missing here is a authentication class, usually I would not build this though since building your own auth is strictly forbidden in most cases, 
+    # that being said you can easily add fields onto the Django auth class, so this could happen here        
+      
+
+2. Define what steps required for event registration (i.e. database flow). Suppose you are already logged in and on registration page with option
+to select event from dropdown list, member information is available globally.
+
+    If 50% registration fee would be sufficient, then that can be done on the frontend when comparing the amount_payed and event cost numbers. If all rules are satisfied, then save the user id into the manytomanyfield on the event registered_users, and they are registered. 
+    Each event has a unique id and when the dropdown selects the event title, display the amount needed, location and details. onClick, the user is taken to a payfield, where they pay with the minimum amount needed displayed. When they pay, that instance of the event is saved to an amountPayed instance, with the user Id. Checking to see if the minimum payed then would be a loop through the amountPayed database with the event and user id's to see if the amount matches the calculated event amount on the frontend. I am trying to think of a way to optimize this, but at present cannot think of a way. By the time of the interview hopefully I will have a more clever way of doing this. 
+
+3. Describe the database flow for cancellation and/or refund?
+
+    This is definetly the most interesting question! I had to rework my models a little when I thought about cancellation. Typically I do on_delete=models.CASCADE and be done with it, but that won't work in this instance. I learned a new method of handling deletions here, the models.set. There are lots of ways to handle this, but saving things into arrays or anything like that seems inneficient, so I wanted this whole process to be handeled by a database method. The on_delete set takes a function that will give the amount payed instance the information it needs to handle refunds (event id, and that it has been deleted). When the event is deleted, the amountPayed foreign key will change from the id of the event, to the id of the event in a string with the word cancelled before it. 
+    I can imagine on the frontend there would be two parts to handling the cancellatoin of an event. The first would be to actually cancel the event, which would delete the instance of the event (not affecting users) causing the database to rename all of the foreign keys with that events id. Then on the frontend would be a button that would say 'issue refunds'. This would trigger a loop through the amountPayed's and find all with the event_id including 'cancelled' (probably use regex, or since we know the cancelled is at the begining we could use slice and grab the first letters.. might be more effiecient to search by refunded first though to get the correct list to search through), and the refunded field being null. If the amountPayed instance satisfies these requirments, then I would sum the total amount, make an email list using the user_id fields on the amountPayed instance and tell the user the total amount refunded and all the emails for the users. When the manager clicks submit, the refunds would be issued, and upon respose being confirmed for the refund happening, save the date of the refund issuance into the amountPayed instances rufunded field. 
